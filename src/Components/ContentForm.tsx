@@ -1,28 +1,33 @@
 import Grid2 from "@mui/material/Unstable_Grid2";
 import React, { FormEvent } from "react";
-import { FormValues } from "../App";
+import { FormData } from "../App";
 import { FormProperty } from "./FormProperty";
 import Button from "@mui/material/Button";
-import { MPMBGenericProperty } from "../Content/CommonAttributes";
+import { PropertyMetaData, PropertyType } from "../Content/CommonAttributes";
 
 interface ContentFormProps {
-  formValues: FormValues;
-  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>;
-  itemPropertiesSubset: MPMBGenericProperty<any>[];
+  formData: FormData;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  itemPropertiesSubset: PropertyMetaData<PropertyType>[];
   setShowScript: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ContentForm: React.FC<ContentFormProps> = ({
-  formValues,
-  setFormValues,
+  formData,
+  setFormData,
   itemPropertiesSubset,
   setShowScript,
 }) => {
-  const updateProperty: (property: string, value: any) => void = (
+  const updateProperty: (property: string, value: PropertyType) => void = (
     property,
     value
   ) => {
-    setFormValues({ ...formValues, [property]: value });
+    if (value) {
+      setFormData({ ...formData, [property]: value });
+    } else {
+      delete formData[property];
+      setFormData({...formData});
+    }
     setShowScript(false);
   };
 
@@ -37,6 +42,7 @@ export const ContentForm: React.FC<ContentFormProps> = ({
         <FormProperty
           key={property.propertyName}
           property={property}
+          formData={formData}
           updateProperty={updateProperty}
         />
       ))}

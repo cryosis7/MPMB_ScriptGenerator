@@ -35,7 +35,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/no-explicit-any": 2
+    }
   },
   "browserslist": {
     "production": [

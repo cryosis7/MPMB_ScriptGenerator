@@ -1,4 +1,5 @@
-export interface MPMBGenericProperty<T extends string | number | boolean | SourceMaterial | Action[] > {
+export type PropertyType = string | number | boolean | SourceMaterial | Action[]
+export interface PropertyMetaData<T extends PropertyType > {
     propertyName: string
     example: T
     required: boolean
@@ -6,7 +7,7 @@ export interface MPMBGenericProperty<T extends string | number | boolean | Sourc
     use: string
     minimumVersion?: string
     longDescription?: string
-    allowedValues?: T[]
+    allowedValues?: string[]
 }
 
 export type SourceMaterial = [string, number];
@@ -14,7 +15,7 @@ export type SourceMaterial = [string, number];
 type ActionType = 'action' | 'bonus action' | 'reaction';
 type Action = [ActionType, string]
 
-const action:MPMBGenericProperty<Action[]> = {
+const action:PropertyMetaData<Action[]> = {
     propertyName: 'action',
     example: [
         ["reaction", " (start)"],

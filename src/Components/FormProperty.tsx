@@ -1,29 +1,52 @@
-import { MPMBGenericProperty } from "../Content/CommonAttributes";
+import { PropertyMetaData, PropertyType } from "../Content/CommonAttributes";
 import { toTitleCase } from "../Utils";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import React, { useEffect } from "react";
+import React from "react";
+import Checkbox from "@mui/material/Checkbox";
+import { FormData } from "../App";
+import { FormControlLabel, Switch } from "@mui/material";
 
 interface FormPropertyProps {
-  property: MPMBGenericProperty<any>;
-  updateProperty: (property: string, value: any) => void;
+  property: PropertyMetaData<PropertyType>;
+  formData: FormData;
+  updateProperty: (property: string, value: PropertyType) => void;
 }
 
 export const FormProperty: React.FC<FormPropertyProps> = ({
   property,
+  formData,
   updateProperty,
 }) => {
-  // Sets property if it's a default.
-  useEffect(() => {
-    if (property.allowedValues != null && property.allowedValues.length > 0) {
-      updateProperty(property.propertyName, property.allowedValues[0]);
+  const getComponent = () => {
+    if (typeof property.example === "string") {
+      return getTextComponent(property as PropertyMetaData<string>);
+    } else if (typeof property.example === "boolean") {
+      return getBooleanComponent(property as PropertyMetaData<boolean>);
     }
-  }, []);
+    return <></>;
+  };
 
-  const getComponent: (
-    property: MPMBGenericProperty<any>
-  ) => React.ReactElement = (property) => {
+  const getBooleanComponent = (property: PropertyMetaData<boolean>) => {
+    const checkedState = !!(formData?.[property.propertyName] ?? false);
+    return (
+      <FormControlLabel
+        control={
+          <Switch
+            checked={checkedState}
+            value={checkedState}
+            onChange={(event, checked) =>
+              updateProperty(property.propertyName, checked)
+            }
+          />
+        }
+        label={toTitleCase(property.propertyName)}
+      />
+    );
+  };
+
+  const getTextComponent = (property: PropertyMetaData<string>) => {
     if (property.allowedValues != null && property.allowedValues.length > 0) {
       return (
         <TextField
@@ -31,7 +54,8 @@ export const FormProperty: React.FC<FormPropertyProps> = ({
           label={toTitleCase(property.propertyName)}
           select
           fullWidth
-          defaultValue={property.allowedValues[0]}
+          placeholder={property.allowedValues[0]}
+          value={formData?.[property.propertyName] ?? ""}
           onChange={(event) =>
             updateProperty(property.propertyName, event.target.value)
           }
@@ -52,6 +76,7 @@ export const FormProperty: React.FC<FormPropertyProps> = ({
         placeholder={property.example}
         fullWidth
         autoComplete="off"
+        value={formData?.[property.propertyName] ?? ""}
         onChange={(event) =>
           updateProperty(property.propertyName, event.target.value)
         }
@@ -59,5 +84,5 @@ export const FormProperty: React.FC<FormPropertyProps> = ({
     );
   };
 
-  return <Grid2>{getComponent(property)}</Grid2>;
+  return <Grid2>{getComponent()}</Grid2>;
 };
