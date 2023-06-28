@@ -1,4 +1,4 @@
-import { PropertyMetaData, SourceMaterial } from "./CommonAttributes";
+import {PropertyMetaData, PropertyType, SourceMaterial} from "./CommonAttributes";
 
 const name: PropertyMetaData<string> = {
   propertyName: "name",
@@ -178,7 +178,7 @@ const descriptionFull: PropertyMetaData<string> = {
     "This text is used to populate the tooltip of the magic items so that the original description can be read. This description will also be available in a pop-up by using the button in the item's line. There is no limit to how big this description can be, but very long descriptions will not always display correctly.",
 };
 
-export const MagicItemProperties: PropertyMetaData<any>[] = [
+export const MagicItemProperties: PropertyMetaData<PropertyType>[] = [
   name,
   sortName,
   nameAlt,
